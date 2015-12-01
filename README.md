@@ -9,6 +9,9 @@
 ![将就看吧](http://image17-c.poco.cn/mypoco/myphoto/20151201/20/17425403720151201203317038.gif?333x514_110)
 
 
+图片链接：http://image17-c.poco.cn/mypoco/myphoto/20151201/20/17425403720151201203317038.gif?333x514_110
+
+
 不要吐槽TabBar  ，Google也在这么干（手动滑稽）
 
 ##如何接入
@@ -323,6 +326,10 @@ NORMAL 代表普通点击切换的样式
    
  ![将就看吧](http://image17-c.poco.cn/mypoco/myphoto/20151201/21/17425403720151201215827064.gif?336x498_110
 )
+
+
+图片链接：http://image17-c.poco.cn/mypoco/myphoto/20151201/21/17425403720151201215827064.gif?336x498_110
+
 
 
 ###2.通过继承KDrawerContentLayout 用xml自己写布局实现
