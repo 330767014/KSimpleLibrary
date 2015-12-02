@@ -218,6 +218,8 @@ Fragment：继承  KRefreshFragment 并实现 IBaseAction
 	
 如果想对 WebView 进行下拉刷新，请去掉外层的 RelativeLayout
 
+更多自定义下拉刷新的内容，参见：https://github.com/kot32go/RefreshView  或者样例代码
+
 
 ## TabBar 使用
 
@@ -354,6 +356,45 @@ NORMAL 代表普通点击切换的样式
 ###3.如何复用Drawer？
 
 可能在数个Activity中都要存在Drawer，这时可以用 new KDrawerBuilder(otherActivity.this).withExistedDrawer(drawer)...
+
+
+
+##简化ListView 和 RecyclerView 的Adapter的创建
+
+###ListView
+
+Adapter 继承自 SimpleBaseAdapter<T>（取自StormZhang的博客）
+
+例如：
+
+
+	public class TestFoodListAdapter extends SimpleBaseAdapter<String> {
+
+	    public TestFoodListAdapter(Context context, List<String> data) {
+	        super(context, data);
+	    }
+
+	    @Override
+	    public int getItemResource() {
+	        return R.layout.listitem_test;
+	    }
+
+	    @Override
+	    public View getItemView(int position, View convertView, ViewHolder holder) {
+	        TextView text = holder.getView(R.id.text);
+	        text.setText(getItem(position));
+	        return convertView;
+	    }
+	}
+
+
+
+###RecyclerView
+
+Adapter 继承自 SimpleRecycleAdapter<T> 
+
+参见：https://github.com/kot32go/SimpleRecycleAdapter
+
 
 
 
