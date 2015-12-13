@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.kot32.ksimpleframeworklibrary.fragment.TestFragment;
+import com.kot32.ksimpleframeworklibrary.fragment.TestListViewFragment;
+import com.kot32.ksimpleframeworklibrary.fragment.TestWebViewFragment;
 import com.kot32.ksimpleframeworklibrary.model.Student;
 import com.kot32.ksimplelibrary.activity.i.IBaseAction;
 import com.kot32.ksimplelibrary.activity.t.KTabActivity;
@@ -28,6 +29,8 @@ public class MainActivity extends KTabActivity implements IBaseAction {
 
     private final static String AVATAR_URL = "http://img1.gamersky.com/image2015/03/20150313lr_1/gamersky_03small_06_20153171716F84.jpg";
 
+    private DrawerLayout drawer;
+
     @Override
     public int initLocalData() {
         return 0;
@@ -43,14 +46,29 @@ public class MainActivity extends KTabActivity implements IBaseAction {
 //                .withWidth(300)
 //                .build();
 
-        final DrawerComponent.DrawerHeader header = new DrawerComponent.DrawerHeader(DrawerComponent.DrawerHeader.DrawerHeaderStyle.KENBURNS,
+        final DrawerComponent.DrawerHeader header = new DrawerComponent.DrawerHeader(DrawerComponent.DrawerHeader.DrawerHeaderStyle.NORMAL,
                 R.drawable.drawer_theme_6_bg,
                 this);
+        header.addAvatar(R.drawable.avatar, AVATAR_URL, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //判断当前是否登录
+                if (getSimpleApplicationContext().isLogined()) {
+                    //do somehting
+                } else {
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    if(drawer!=null){
+                        drawer.closeDrawers();
+                    }
+                }
+            }
+        });
         header.addNickName("未登录");
         header.addIntroduction("请点击默认头像登录");
 
 
-        final DrawerLayout drawer = new KDrawerBuilder(this)
+        drawer = new KDrawerBuilder(this)
                 .withToolBar(toolbar)
                 .withWidth(300)
                 .addDrawerHeader(header, null)
@@ -85,19 +103,7 @@ public class MainActivity extends KTabActivity implements IBaseAction {
                 })
                 .build();
 
-        header.addAvatar(R.drawable.avatar, AVATAR_URL, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //判断当前是否登录
-                if (getSimpleApplicationContext().isLogined()) {
-                    //do somehting
-                } else {
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    drawer.closeDrawers();
-                }
-            }
-        });
+
 
         setTitle("测试");
     }
@@ -128,10 +134,10 @@ public class MainActivity extends KTabActivity implements IBaseAction {
 
     @Override
     public List<Fragment> getFragmentList() {
-        fragmentList.add(new TestFragment());
-        fragmentList.add(new TestFragment());
-        fragmentList.add(new TestFragment());
-        fragmentList.add(new TestFragment());
+        fragmentList.add(new TestWebViewFragment());
+        fragmentList.add(new TestListViewFragment());
+        fragmentList.add(new TestListViewFragment());
+        fragmentList.add(new TestListViewFragment());
         return fragmentList;
     }
 

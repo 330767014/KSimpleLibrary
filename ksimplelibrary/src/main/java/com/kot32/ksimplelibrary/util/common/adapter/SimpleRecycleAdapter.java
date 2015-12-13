@@ -36,9 +36,7 @@ public abstract class SimpleRecycleAdapter<T> extends RecyclerView.Adapter {
         onBind((InnerViewHolder) holder, position);
     }
 
-    public void onBind(InnerViewHolder holder, int position) {
-
-    }
+    public abstract void onBind(InnerViewHolder holder, int position);
 
     @Override
     public int getItemCount() {
@@ -50,9 +48,7 @@ public abstract class SimpleRecycleAdapter<T> extends RecyclerView.Adapter {
      *
      * @return
      */
-    public int getItemLayoutID() {
-        return 0;
-    }
+    public abstract int getItemLayoutID();
 
     class InnerViewHolder extends RecyclerView.ViewHolder {
 

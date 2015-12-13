@@ -36,4 +36,8 @@ public class Student extends BaseUserModel {
         this.password = password;
     }
 
+    public Student(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

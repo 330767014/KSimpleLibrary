@@ -7,7 +7,10 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 public class DisplayUtil {
     private DisplayUtil() {
@@ -59,6 +62,27 @@ public class DisplayUtil {
         g = (g - 30 < 0) ? 0 : g - 30;
         b = (b - 30 < 0) ? 0 : b - 30;
         return Color.argb(alpha, r, g, b);
+    }
+
+    public static int getTotalHeightofListView(ListView listView) {
+        ListAdapter mAdapter = listView.getAdapter();
+        if (mAdapter == null) {
+            return 0;
+        }
+        int totalHeight = 0;
+        for (int i = 0; i < mAdapter.getCount(); i++) {
+            View mView = mAdapter.getView(i, null, listView);
+            mView.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            //mView.measure(0, 0);
+            totalHeight += mView.getMeasuredHeight();
+        }
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        params.height = totalHeight + (listView.getDividerHeight() * (mAdapter.getCount() - 1));
+//        listView.setLayoutParams(params);
+//        listView.requestLayout();
+        return totalHeight;
     }
 
 }

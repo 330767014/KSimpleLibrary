@@ -13,7 +13,7 @@ import com.kot32.ksimplelibrary.widgets.view.KRefreshView;
 /**
  * Created by kot32 on 15/11/4.
  */
-public class TestFragment extends KRefreshFragment implements IBaseAction {
+public class TestWebViewFragment extends KRefreshFragment implements IBaseAction {
 
     private JDRefreshHeaderView jdRefreshHeaderView;
 
@@ -60,7 +60,7 @@ public class TestFragment extends KRefreshFragment implements IBaseAction {
 
     @Override
     public int getContentLayoutID() {
-        return R.layout.fragment_test;
+        return R.layout.fragment_test_webview;
     }
 
     @Override

@@ -47,7 +47,6 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
     private Handler mHandler;
 
 
-
     {
         mHandler = new Handler() {
             @Override
@@ -56,8 +55,10 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
                 switch (msg.what) {
                     case 1:
                         baseAction.onLoadedNetworkData(contentView);
+                        if (contentView != null) {
+                            baseAction.initView((ViewGroup) contentView);
+                        }
                         baseAction.initController();
-
                         break;
                 }
             }
@@ -100,9 +101,7 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
             startInit();
         }
 
-        if (contentView != null) {
-            baseAction.initView((ViewGroup) contentView);
-        }
+
     }
 
 
@@ -166,6 +165,9 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 baseAction.onLoadedNetworkData(contentView);
+                if (contentView != null) {
+                    baseAction.initView((ViewGroup) contentView);
+                }
                 baseAction.initController();
                 if (loadingView != null && loadingView.isStart()) {
                     loadingView.stop();

@@ -125,4 +125,19 @@ public class FieldUtil {
     public static boolean isInvalid(Field f) {
         return (Modifier.isStatic(f.getModifiers()) && Modifier.isFinal(f.getModifiers())) || f.isSynthetic();
     }
+
+    public static Object getDefedValue(String name,Class<?> claxx,Object host){
+        Object res=null;
+        for(Field field:getAllDeclaredFields(claxx)){
+            if(field.getName().equals(name)){
+                try {
+                    res=get(field,host);
+                    break;
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return res;
+    }
 }

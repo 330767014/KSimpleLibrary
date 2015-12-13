@@ -53,14 +53,24 @@ public abstract class KRefreshActivity extends KSimpleBaseActivityImpl implement
         oldView.setLayoutParams(layoutParams);
         refreshView.addView(oldView, 1);
 
-
         refreshView.setiRefreshAction(this);
         refreshView.setHeaderHeight(100);//dp
-        refreshView.setMAX_LIMIT_SOLT(50);
+        refreshView.setMAX_LIMIT_SLOT(50);
 
         if (getHeaderView() != null)
             refreshView.setHeaderView(getHeaderView(), null);
 
         return refreshView;
+    }
+
+    public void initLoadMoreFunc() {
+        if (refreshView != null) {
+            refreshView.initLoadMoreFunc();
+            refreshView.setLoadMoreConfig(getLoadMoreConfig());
+        }
+    }
+
+    public KRefreshView.LoadMoreConfig getLoadMoreConfig() {
+        return new KRefreshView.LoadMoreConfig(false, null, null, null, 0);
     }
 }
