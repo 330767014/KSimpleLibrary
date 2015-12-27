@@ -8,7 +8,7 @@ public class ViewUtil {
     }
 
     public static int generateViewId() {
-        String dyIDString = System.currentTimeMillis() + "";
+        String dyIDString = System.nanoTime() + "";
         int dyID = Integer.parseInt((dyIDString).substring(dyIDString.length() - 4, dyIDString.length()));
         return dyID;
     }
