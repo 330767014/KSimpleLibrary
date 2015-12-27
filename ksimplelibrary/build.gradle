@@ -28,4 +28,6 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.6.0'
 
     compile 'com.android.support:recyclerview-v7:21.0.0'
+
+    compile 'com.android.support:percent:22.2.0'
 }

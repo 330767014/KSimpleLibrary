@@ -5,7 +5,7 @@ import com.kot32.ksimplelibrary.model.domain.BaseUserModel;
 /**
  * Created by kot32 on 15/11/9.
  */
-public class Student extends BaseUserModel {
+public class Student implements BaseUserModel {
     private int id;
     private String username;
     private String password;

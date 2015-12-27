@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.kot32.ksimplelibrary.activity.i.IBaseAction;
 import com.kot32.ksimplelibrary.activity.i.ITabPageAction;
 import com.kot32.ksimplelibrary.activity.t.base.KSimpleBaseActivityImpl;
+import com.kot32.ksimplelibrary.util.tools.ViewUtil;
 import com.kot32.ksimplelibrary.widgets.view.KNoScrollViewPager;
 import com.kot32.ksimplelibrary.widgets.view.KTabBar;
 
@@ -33,6 +34,8 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
     private TabAdapter tabAdapter;
 
     private List<Fragment> fragmentList;
+
+    private TabConfig config;
 
 
     @Override
@@ -60,9 +63,11 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
     }
 
 
-
     private void initdata() {
         tabAdapter = new TabAdapter(getSupportFragmentManager());
+        if (getTabConfig() == null) {
+            config = new TabConfig(KTabBar.TabStyle.STYLE_GRADUAL, 9.5f, 1f, 0.45f, 0.45f, 0.12f);
+        }
     }
 
 
@@ -72,7 +77,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         content.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         container = new KNoScrollViewPager(this);
-        container.setId(999);
+        container.setId(ViewUtil.generateViewId());
         LinearLayout.LayoutParams containerParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         containerParam.weight = 9.5f;
         content.addView(container, containerParam);
@@ -82,7 +87,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1));
         content.addView(divider);
 
-        tabBar = new KTabBar(this, getTabStyle());
+        tabBar = new KTabBar(this, config.style);
         LinearLayout.LayoutParams tabParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         tabParam.weight = 1;
         content.addView(tabBar, tabParam);
@@ -96,16 +101,16 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         tabBar.setOnTabClickListener(new KTabBar.OnTabClickListener() {
             @Override
             public void onClick(int index) {
-                if (getTabStyle() == KTabBar.TabStyle.STYLE_NORMAL) {
+                if (config.style == KTabBar.TabStyle.STYLE_NORMAL) {
                     container.setCurrentItem(index, false);
-                } else if (getTabStyle() == KTabBar.TabStyle.STYLE_GRADUAL) {
+                } else if (config.style == KTabBar.TabStyle.STYLE_GRADUAL) {
                     container.setCurrentItem(index, false);
                 }
             }
         });
 
-        //如是果不是渐变模式，不允许KNoScrollViewPager滑动
-        if (getTabStyle() == KTabBar.TabStyle.STYLE_NORMAL) {
+        //如果不是渐变模式，不允许KNoScrollViewPager滑动
+        if (config.style == KTabBar.TabStyle.STYLE_NORMAL) {
             container.setNoScroll(true);
         }
 
@@ -113,11 +118,12 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
     }
 
     public void addTab(int imgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
+
         if (fragmentList == null || fragmentList.size() == 0) {
             Log.e("警告", "未得到要显示的Fragment 列表,无法添加 Tab");
             return;
         }
-        tabBar.addTab(imgId, highlightImgId, text, fontColor, highlightFontColor);
+        tabBar.addTab(imgId, highlightImgId, text, fontColor, highlightFontColor, config.eachTabWidthRatio, config.eachTabHeightRatio,config.eachTabMrginTopRatio);
     }
 
     @Override
@@ -125,7 +131,6 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         return content;
     }
 
-    public abstract KTabBar.TabStyle getTabStyle();
 
     public abstract List<Fragment> getFragmentList();
 
@@ -162,7 +167,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
 
         @Override
         public void onPageSelected(int position) {
-            if(fragmentList.get(position) instanceof ITabPageAction){
+            if (fragmentList.get(position) instanceof ITabPageAction) {
                 ((ITabPageAction) fragmentList.get(position)).onPageSelected();
             }
         }
@@ -185,6 +190,32 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
     @Override
     public int getContentLayoutID() {
         return 0;
+    }
+
+    public abstract TabConfig getTabConfig();
+
+    public class TabConfig {
+
+        KTabBar.TabStyle style;
+        //内容在LinearLayout 中所占据的重量
+        float contentWeight;
+        //TabBar 在LinearLayout 中所占据的重量
+        float tabBarWeight;
+        //每一个Tab图标 的宽度占它的容器的比例
+        float eachTabWidthRatio;
+        //每一个Tab图标 的高度占它的容器的比例
+        float eachTabHeightRatio;
+        //每一个Tab图标 离TabBar顶部的百分比
+        float eachTabMrginTopRatio;
+
+        public TabConfig(KTabBar.TabStyle style, float contentWeight, float tabBarWeight, float eachTabWidthRatio, float eachTabHeightRatio, float eachTabMrginTopRatio) {
+            this.style = style;
+            this.contentWeight = contentWeight;
+            this.tabBarWeight = tabBarWeight;
+            this.eachTabWidthRatio = eachTabWidthRatio;
+            this.eachTabHeightRatio = eachTabHeightRatio;
+            this.eachTabMrginTopRatio = eachTabMrginTopRatio;
+        }
     }
 
 }

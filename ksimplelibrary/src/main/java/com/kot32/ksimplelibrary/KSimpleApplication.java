@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.kot32.ksimplelibrary.manager.preference.PreferenceManager;
-import com.kot32.ksimplelibrary.manager.task.LoginTask;
 import com.kot32.ksimplelibrary.manager.task.base.SimpleTask;
 import com.kot32.ksimplelibrary.manager.task.base.SimpleTaskManager;
 import com.kot32.ksimplelibrary.model.domain.BaseUserModel;
@@ -28,6 +27,8 @@ public abstract class KSimpleApplication extends Application {
     }
 
     private void init() {
+
+        startInit();
         PreferenceManager.init(this);
         //载入个性化配置
         initLocalPreference((HashMap<String, ?>) PreferenceManager.getAllPreference());
@@ -58,7 +59,7 @@ public abstract class KSimpleApplication extends Application {
     /**
      * 用户登录逻辑
      */
-    public abstract LoginTask getLoginTask();
+    public abstract SimpleTask getLoginTask();
 
     /**
      * 初始化
@@ -92,7 +93,7 @@ public abstract class KSimpleApplication extends Application {
     //注销
     public void logout() {
         userModel = null;
-        PreferenceManager.setLocalUserModel(new BaseUserModel());
+        PreferenceManager.setLocalUserModel(new BaseUserModel(){});
     }
 
 }

@@ -115,9 +115,13 @@ public class PreferenceManager {
         editor.commit();
     }
 
-    public static Object getPreference(String key) {
+    public static Object getPreference(String key, Object defaultValue) {
         checkIfNull();
-        return systemUtil.getAll().get(key);
+        Object value = systemUtil.getAll().get(key);
+        if (value == null) {
+            value = defaultValue;
+        }
+        return value;
     }
 
     public static Map<String, ?> getAllPreference() {

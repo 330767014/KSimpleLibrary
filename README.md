@@ -273,10 +273,10 @@ NORMAL 代表普通点击切换的样式
         addTab(R.mipmap.discover, R.mipmap.discover_green, "发现", Color.GRAY, Color.parseColor("#04b00f"));
         addTab(R.mipmap.about_me, R.mipmap.about_me_green, "我", Color.GRAY, Color.parseColor("#04b00f"));
     }
-    //设定样式为微信样式（可滑动，渐变）,还可以是 NORMAL
+    //进行详细设定，可以通过TabConfig 指定TabBar 占全局的高度，以及每一个Tab 中的图标所占的比例
     @Override
-    public KTabBar.TabStyle getTabStyle() {
-        return KTabBar.TabStyle.STYLE_GRADUAL;
+    public KTabActivity.TabConfig getTabConfig() {
+        return null;
     }
 
     @Override

@@ -16,7 +16,7 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.kot32.ksimplelibrary.util.tools.DisplayUtil;
-import com.kot32.ksimplelibrary.util.tools.FieldUtil;
+import com.kot32.ksimplelibrary.util.tools.reflect.FieldUtil;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -347,7 +347,7 @@ public class KRefreshView extends LinearLayout {
                         shouldRefresh = false;
                         float ratio = dis / DisplayUtil.dip2px(getContext(), HEADER_HEIGHT);
                         if (refreshViewHolder != null && !isRefreshing)
-                            refreshViewHolder.pullingTips(headerView, (int) (100 * ratio));
+                            refreshViewHolder.pullingTips(headerView, (int) (100 * Math.abs(ratio)));
                     }
 
                     if (dis >= 0 && (dis < totalLimit)) {
@@ -370,7 +370,7 @@ public class KRefreshView extends LinearLayout {
                         shouldLoadMore = false;
                         float ratio = dis / DisplayUtil.dip2px(getContext(), BOTTOM_HEIGHT);
                         if (loadMoreViewHolder != null && !isLoadMoreing)
-                            loadMoreViewHolder.loadTips(headerView, (int) (100 * ratio));
+                            loadMoreViewHolder.loadTips(headerView, (int) (100 * Math.abs(ratio)));
                     }
                 }
 

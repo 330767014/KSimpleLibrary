@@ -59,4 +59,34 @@ public abstract class KSimpleBaseActivityImpl extends KSimpleBaseActivity {
         return null;
     }
 
+
+    Toast mToast;
+    public void showToast(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            if (mToast == null) {
+                mToast = Toast.makeText(getApplicationContext(), text,
+                        Toast.LENGTH_SHORT);
+            } else {
+                mToast.setText(text);
+            }
+            mToast.show();
+        }
+    }
+    
+    Toast mToast;
+    public void showToast(int resId) {
+        
+        if (mToast == null) {
+            mToast = Toast.makeText(getApplicationContext(), resId,
+                    Toast.LENGTH_SHORT);
+        } else {
+            mToast.setText(resId);
+        }
+        mToast.show();
+    }
+
+    public static void showLog(String msg) {
+        Log.i("KSimpleLibrary", msg);
+    }
+
 }

@@ -10,13 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kot32.ksimpleframeworklibrary.fragment.TestListViewFragment;
-import com.kot32.ksimpleframeworklibrary.fragment.TestWebViewFragment;
 import com.kot32.ksimpleframeworklibrary.model.Student;
 import com.kot32.ksimplelibrary.activity.i.IBaseAction;
 import com.kot32.ksimplelibrary.activity.t.KTabActivity;
 import com.kot32.ksimplelibrary.widgets.drawer.KDrawerBuilder;
 import com.kot32.ksimplelibrary.widgets.drawer.component.DrawerComponent;
-import com.kot32.ksimplelibrary.widgets.view.KTabBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +52,7 @@ public class MainActivity extends KTabActivity implements IBaseAction {
             public void onClick(View v) {
                 //判断当前是否登录
                 if (getSimpleApplicationContext().isLogined()) {
-                    //do somehting
+                    //do something
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);
@@ -126,19 +124,19 @@ public class MainActivity extends KTabActivity implements IBaseAction {
 
     }
 
-    //设定样式为微信样式（可滑动，渐变）
-    @Override
-    public KTabBar.TabStyle getTabStyle() {
-        return KTabBar.TabStyle.STYLE_GRADUAL;
-    }
 
     @Override
     public List<Fragment> getFragmentList() {
-        fragmentList.add(new TestWebViewFragment());
+        fragmentList.add(new TestListViewFragment());
         fragmentList.add(new TestListViewFragment());
         fragmentList.add(new TestListViewFragment());
         fragmentList.add(new TestListViewFragment());
         return fragmentList;
+    }
+
+    @Override
+    public KTabActivity.TabConfig getTabConfig() {
+        return null;
     }
 
     @Override

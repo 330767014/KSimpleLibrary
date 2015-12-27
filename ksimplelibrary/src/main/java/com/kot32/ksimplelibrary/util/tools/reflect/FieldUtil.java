@@ -1,4 +1,4 @@
-package com.kot32.ksimplelibrary.util.tools;
+package com.kot32.ksimplelibrary.util.tools.reflect;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

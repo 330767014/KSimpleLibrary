@@ -8,7 +8,7 @@ import com.kot32.ksimplelibrary.manager.task.base.NetworkTask;
 import com.kot32.ksimplelibrary.model.domain.BaseUserModel;
 import com.kot32.ksimplelibrary.model.response.BaseResponse;
 import com.kot32.ksimplelibrary.network.NetworkExecutor;
-import com.kot32.ksimplelibrary.util.tools.FieldUtil;
+import com.kot32.ksimplelibrary.util.tools.reflect.FieldUtil;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
