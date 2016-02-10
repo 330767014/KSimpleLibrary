@@ -1,5 +1,7 @@
 package com.kot32.ksimplelibrary.activity.t;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -24,16 +26,15 @@ import java.util.List;
  */
 public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IBaseAction {
 
-    private LinearLayout content;
+    private LinearLayout       content;
 
     private KNoScrollViewPager container;
 
-    private KTabBar tabBar;
+    private KTabBar            tabBar;
 
-    private TabAdapter tabAdapter;
+    private TabAdapter         tabAdapter;
 
-    private List<Fragment> fragmentList;
-
+    private List<Fragment>     fragmentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +60,15 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         super.onPostCreate(savedInstanceState, persistentState);
     }
 
-
-
     private void initdata() {
         tabAdapter = new TabAdapter(getSupportFragmentManager());
     }
 
-
     private void initview() {
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        content.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                           ViewGroup.LayoutParams.MATCH_PARENT));
 
         container = new KNoScrollViewPager(this);
         container.setId(999);
@@ -94,6 +93,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         container.setOnPageChangeListener(tabAdapter);
 
         tabBar.setOnTabClickListener(new KTabBar.OnTabClickListener() {
+
             @Override
             public void onClick(int index) {
                 if (getTabStyle() == KTabBar.TabStyle.STYLE_NORMAL) {
@@ -104,21 +104,26 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
             }
         });
 
-        //如是果不是渐变模式，不允许KNoScrollViewPager滑动
+        // 如是果不是渐变模式，不允许KNoScrollViewPager滑动
         if (getTabStyle() == KTabBar.TabStyle.STYLE_NORMAL) {
             container.setNoScroll(true);
         }
 
-
     }
 
     public void addTab(int imgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
+        Bitmap imgBitmap = BitmapFactory.decodeResource(getResources(), imgId);
+        Bitmap highlightImgBitmap = BitmapFactory.decodeResource(getResources(), highlightImgId);
+        addTab(imgBitmap, highlightImgBitmap, text, fontColor, highlightFontColor);
+    }
+
+    public void addTab(Bitmap imgBitmap, Bitmap highlightImgBitmap, String text, int fontColor, int highlightFontColor) {
         if (fragmentList == null || fragmentList.size() == 0) {
             Log.e("警告", "未得到要显示的Fragment 列表,无法添加 Tab");
             return;
         }
-        tabBar.addTab(imgId, highlightImgId, text, fontColor, highlightFontColor);
-        if(tabAdapter!=null){
+        tabBar.addTab(imgBitmap, highlightImgBitmap, text, fontColor, highlightFontColor);
+        if (tabAdapter != null) {
             tabAdapter.notifyDataSetChanged();
         }
     }
@@ -134,8 +139,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
 
     class TabAdapter extends FragmentPagerAdapter implements KNoScrollViewPager.OnPageChangeListener {
 
-
-        public TabAdapter(FragmentManager fm) {
+        public TabAdapter(FragmentManager fm){
             super(fm);
         }
 
@@ -165,7 +169,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
 
         @Override
         public void onPageSelected(int position) {
-            if(fragmentList.get(position) instanceof ITabPageAction){
+            if (fragmentList.get(position) instanceof ITabPageAction) {
                 ((ITabPageAction) fragmentList.get(position)).onPageSelected();
             }
         }
