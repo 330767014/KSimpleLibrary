@@ -1,6 +1,7 @@
-
 package com.kot32.ksimplelibrary.activity.t;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -26,18 +27,17 @@ import java.util.List;
  */
 public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IBaseAction {
 
-    private LinearLayout content;
+    private LinearLayout       content;
 
     private KNoScrollViewPager container;
 
-    private KTabBar tabBar;
+    private KTabBar            tabBar;
 
-    private TabAdapter tabAdapter;
+    private TabAdapter         tabAdapter;
 
-    private List<Fragment> fragmentList;
+    private List<Fragment>     fragmentList;
 
-    private TabConfig config;
-
+    private TabConfig          config;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,24 +63,25 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         super.onPostCreate(savedInstanceState, persistentState);
     }
 
-
     private void initdata() {
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         if (getTabConfig() == null) {
-            config = new TabConfig(KTabBar.TabStyle.STYLE_GRADUAL, 9.5f, 1f, 0.45f, 0.45f, 0.12f);
+            config = new TabConfig(KTabBar.TabStyle.STYLE_GRADUAL, 9.5f, 1f, 0.45f, 0.45f, 0.12f, 12);
+        } else {
+            config = getTabConfig();
         }
     }
-
 
     private void initview() {
         content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
-        content.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        content.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                           ViewGroup.LayoutParams.MATCH_PARENT));
 
         container = new KNoScrollViewPager(this);
         container.setId(ViewUtil.generateViewId());
         LinearLayout.LayoutParams containerParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        containerParam.weight = 9.5f;
+        containerParam.weight = config.contentWeight;
         content.addView(container, containerParam);
 
         View divider = new View(this);
@@ -90,7 +91,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
 
         tabBar = new KTabBar(this, config.style);
         LinearLayout.LayoutParams tabParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
-        tabParam.weight = 1;
+        tabParam.weight = config.tabBarWeight;
         content.addView(tabBar, tabParam);
     }
 
@@ -100,6 +101,7 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         container.setOnPageChangeListener(tabAdapter);
 
         tabBar.setOnTabClickListener(new KTabBar.OnTabClickListener() {
+
             @Override
             public void onClick(int index) {
                 if (config.style == KTabBar.TabStyle.STYLE_NORMAL) {
@@ -110,21 +112,32 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
             }
         });
 
-        //如果不是渐变模式，不允许KNoScrollViewPager滑动
+        // 如果不是渐变模式，不允许KNoScrollViewPager滑动
         if (config.style == KTabBar.TabStyle.STYLE_NORMAL) {
             container.setNoScroll(true);
         }
 
-
     }
 
-    public void addTab(int imgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
+    public void addTab(int iconImgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
+        Bitmap iconImgBitmap = BitmapFactory.decodeResource(getResources(), iconImgId);
+        Bitmap highlightImgBitmap = BitmapFactory.decodeResource(getResources(), highlightImgId);
+
+        addTab(iconImgBitmap, highlightImgBitmap, text, fontColor, highlightFontColor);
+    }
+
+    public void addTab(Bitmap iconImgBitmap, Bitmap highlightImgBitmap, String text, int fontColor,
+                       int highlightFontColor) {
 
         if (fragmentList == null || fragmentList.size() == 0) {
             Log.e("警告", "未得到要显示的Fragment 列表,无法添加 Tab");
             return;
         }
-        tabBar.addTab(imgId, highlightImgId, text, fontColor, highlightFontColor, config.eachTabWidthRatio, config.eachTabHeightRatio,config.eachTabMrginTopRatio);
+        tabBar.addTab(iconImgBitmap, highlightImgBitmap, text, fontColor, highlightFontColor, config.eachTabWidthRatio,
+                      config.eachTabHeightRatio, config.eachTabMrginTopRatio, config.textSize);
+        if (tabAdapter != null) {
+            tabAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -132,13 +145,11 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
         return content;
     }
 
-
     public abstract List<Fragment> getFragmentList();
 
     class TabAdapter extends FragmentPagerAdapter implements KNoScrollViewPager.OnPageChangeListener {
 
-
-        public TabAdapter(FragmentManager fm) {
+        public TabAdapter(FragmentManager fm){
             super(fm);
         }
 
@@ -198,24 +209,28 @@ public abstract class KTabActivity extends KSimpleBaseActivityImpl implements IB
     public class TabConfig {
 
         KTabBar.TabStyle style;
-        //内容在LinearLayout 中所占据的重量
-        float contentWeight;
-        //TabBar 在LinearLayout 中所占据的重量
-        float tabBarWeight;
-        //每一个Tab图标 的宽度占它的容器的比例
-        float eachTabWidthRatio;
-        //每一个Tab图标 的高度占它的容器的比例
-        float eachTabHeightRatio;
-        //每一个Tab图标 离TabBar顶部的百分比
-        float eachTabMrginTopRatio;
+        // 内容在LinearLayout 中所占据的重量
+        float            contentWeight;
+        // TabBar 在LinearLayout 中所占据的重量
+        float            tabBarWeight;
+        // 每一个Tab图标 的宽度占它的容器的比例
+        float            eachTabWidthRatio;
+        // 每一个Tab图标 的高度占它的容器的比例
+        float            eachTabHeightRatio;
+        // 每一个Tab图标 离TabBar顶部的百分比
+        float            eachTabMrginTopRatio;
+        // 文字描述的大小(sp)
+        float            textSize;
 
-        public TabConfig(KTabBar.TabStyle style, float contentWeight, float tabBarWeight, float eachTabWidthRatio, float eachTabHeightRatio, float eachTabMrginTopRatio) {
+        public TabConfig(KTabBar.TabStyle style, float contentWeight, float tabBarWeight, float eachTabWidthRatio,
+                         float eachTabHeightRatio, float eachTabMrginTopRatio, float textSize){
             this.style = style;
             this.contentWeight = contentWeight;
             this.tabBarWeight = tabBarWeight;
             this.eachTabWidthRatio = eachTabWidthRatio;
             this.eachTabHeightRatio = eachTabHeightRatio;
             this.eachTabMrginTopRatio = eachTabMrginTopRatio;
+            this.textSize = textSize;
         }
     }
 
