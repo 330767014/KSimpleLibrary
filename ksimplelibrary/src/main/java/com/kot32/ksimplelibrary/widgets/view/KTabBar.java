@@ -1,8 +1,6 @@
 package com.kot32.ksimplelibrary.widgets.view;
 
 import android.content.Context;
-import android.support.percent.PercentLayoutHelper;
-import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -10,14 +8,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kot32.ksimplelibrary.util.tools.ViewUtil;
-import com.kot32.ksimplelibrary.util.tools.reflect.FieldUtils;
 import com.kot32.ksimplelibrary.widgets.base.KBaseWidgets;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,19 +63,22 @@ public class KTabBar extends KBaseWidgets {
     }
 
 
-    public void addTab(int imgId, int highlightImgId, String text, int fontColor, int highlightFontColor, float widthRatio, float heightRatio, float marginTopRatio) {
+    public void addTab(int imgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
         TabView tabView = null;
 
         if (style == TabStyle.STYLE_GRADUAL) {
-            tabView = new GradualTabView(getContext()).NewTabView(imgId, highlightImgId, text, fontColor, highlightFontColor, widthRatio, heightRatio, marginTopRatio);
+            tabView = new GradualTabView(getContext()).NewTabView(imgId, highlightImgId, text, fontColor, highlightFontColor);
         } else if (style == TabStyle.STYLE_NORMAL) {
-            tabView = new NormalTabView(getContext()).NewTabView(imgId, highlightImgId, text, fontColor, highlightFontColor, widthRatio, heightRatio, marginTopRatio);
+            tabView = new NormalTabView(getContext()).NewTabView(imgId, highlightImgId, text, fontColor, highlightFontColor);
+        }else{
+            tabView = new GradualTabView(getContext()).NewTabView(imgId, highlightImgId, text, fontColor, highlightFontColor);
         }
+
         count++;
         final int index = count - 1;
         LayoutParams layoutParams = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        layoutParams.setMargins(10, 10, 10, 10);
         tabView.setLayoutParams(layoutParams);
-
         this.addView(tabView);
         tabs.add(tabView);
 
@@ -108,7 +105,7 @@ public class KTabBar extends KBaseWidgets {
     }
 
 
-    class TabView extends PercentRelativeLayout {
+    class TabView extends LinearLayout {
 
         public TabView(Context context) {
             super(context);
@@ -148,7 +145,6 @@ public class KTabBar extends KBaseWidgets {
 
         private FrameLayout textSpace;
 
-
         public GradualTabView(Context context) {
             super(context);
             init();
@@ -160,7 +156,7 @@ public class KTabBar extends KBaseWidgets {
         }
 
         private void init() {
-
+            this.setOrientation(VERTICAL);
             imageSpace = new FrameLayout(getContext());
             imageView_outer = new ImageView(getContext());
             imageView_inner = new ImageView(getContext());
@@ -170,7 +166,7 @@ public class KTabBar extends KBaseWidgets {
             textView_outer = new TextView(getContext());
         }
 
-        public GradualTabView NewTabView(int iconImgId, int highlightImgId, String text, int fontColor, int highlightFontColor, float wr, float hr, float tr) {
+        public GradualTabView NewTabView(int iconImgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
             textView_inner.setText(text);
             textView_inner.setTextColor(highlightFontColor);
             textView_inner.setTextSize(12);
@@ -186,35 +182,15 @@ public class KTabBar extends KBaseWidgets {
             imageView_outer.setImageResource(iconImgId);
             imageView_outer.setAlpha(1f);
 
-            /**
-             * Google 竟然没提供set 方法。。罢了
-             */
-            PercentLayoutHelper.PercentLayoutInfo percentInfo = new PercentLayoutHelper.PercentLayoutInfo();
-            percentInfo.heightPercent = hr;
-            percentInfo.widthPercent = wr;
-            percentInfo.topMarginPercent = tr;
-            PercentRelativeLayout.LayoutParams percentLayoutParams = new PercentRelativeLayout.LayoutParams(mContext, null);
-            percentLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            //获取到LayoutInfo 并进行修改
-            Field infoField = FieldUtils.getDeclaredField(PercentRelativeLayout.LayoutParams.class, "mPercentLayoutInfo", true);
-            try {
-                FieldUtils.writeField(infoField, percentLayoutParams, percentInfo);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            int dyId = ViewUtil.generateViewId();
-            imageSpace.setId(dyId);
-            imageSpace.setLayoutParams(percentLayoutParams);
+            imageSpace.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
             imageSpace.addView(imageView_inner, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             imageSpace.addView(imageView_outer, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
 
-            RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            textParams.addRule(RelativeLayout.BELOW, dyId);
-            textParams.addRule(RelativeLayout.CENTER_HORIZONTAL,TRUE);
-            textSpace = new FrameLayout(getContext());
+            LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            textParams.gravity = Gravity.CENTER_HORIZONTAL;
 
+            textSpace = new FrameLayout(getContext());
             textSpace.setLayoutParams(textParams);
             textSpace.addView(textView_inner, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             textSpace.addView(textView_outer, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -275,11 +251,12 @@ public class KTabBar extends KBaseWidgets {
         }
 
         private void init() {
+            this.setOrientation(VERTICAL);
             imageView = new ImageView(getContext());
             textView = new TextView(getContext());
         }
 
-        public NormalTabView NewTabView(int iconImgId, int highlightImgId, String text, int fontColor, int highlightFontColor, float wr, float hr, float tr) {
+        public NormalTabView NewTabView(int iconImgId, int highlightImgId, String text, int fontColor, int highlightFontColor) {
             this.iconImgId = iconImgId;
             this.highlightImgId = highlightImgId;
             this.fontColor = fontColor;
@@ -290,30 +267,9 @@ public class KTabBar extends KBaseWidgets {
             textView.setTextSize(12);
 
             imageView.setImageResource(iconImgId);
-
-            PercentLayoutHelper.PercentLayoutInfo percentInfo = new PercentLayoutHelper.PercentLayoutInfo();
-            percentInfo.heightPercent = hr;
-            percentInfo.widthPercent = wr;
-            percentInfo.topMarginPercent = tr;
-            PercentRelativeLayout.LayoutParams percentLayoutParams = new PercentRelativeLayout.LayoutParams(mContext, null);
-            percentLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            //获取到LayoutInfo 并进行修改
-            Field infoField = FieldUtils.getDeclaredField(PercentRelativeLayout.LayoutParams.class, "mPercentLayoutInfo", true);
-            try {
-                FieldUtils.writeField(infoField, percentLayoutParams, percentInfo);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            int dyId = ViewUtil.generateViewId();
-            imageView.setLayoutParams(percentLayoutParams);
-            imageView.setId(dyId);
+            imageView.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1));
 
             textView.setGravity(Gravity.CENTER_HORIZONTAL);
-
-            RelativeLayout.LayoutParams textParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            textParams.addRule(RelativeLayout.BELOW, dyId);
-            textParams.addRule(RelativeLayout.CENTER_HORIZONTAL,TRUE);
-            textView.setLayoutParams(textParams);
 
             this.addView(imageView);
             this.addView(textView);
