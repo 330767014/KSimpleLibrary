@@ -4,6 +4,15 @@
 >这是一个简单的面向独立 APP 制作者的库，包含了一些通用的界面元素，例如底部 TAB 栏，侧滑菜单等常用 UI ，另外，提供了通用的 Activity 及 Fragment Loading 提示，全局下拉刷新，数据库操作方面使用了 Afinal 这个三方库，网络操作封装了 LiteHttp ，缓存方面使用了 ACache，可以方便结合界面元素进行缓存加载 ，封装了 SharePreference，封装了常用的 Login 操作等。初衷是希望独立 APP 开发者能够快速实现核心功能，而不再纠结各种界面和数据操作细节。
 
 
+##2016-1-20
+
+KTabBar 优化
+
+混淆的时候注意:
+
+-keep class android.support.percent.**{*;}
+
+
 ##2015-12-13 更新
 
 ###1.KRefreshActivity&&KRefreshFragment 支持上拉加载更多了（只支持ListView）
