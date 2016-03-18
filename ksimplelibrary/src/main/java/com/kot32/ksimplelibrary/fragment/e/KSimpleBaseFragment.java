@@ -27,28 +27,27 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragment {
 
-
     private IBaseAction baseAction;
 
     public abstract IBaseAction getIBaseAction();
 
-    private View contentView;
+    private View               contentView;
 
-    public static final String TAG = "KSimpleBaseFragment";
+    public static final String TAG      = "KSimpleBaseFragment";
 
-    private AtomicBoolean isLoaded = new AtomicBoolean(false);
+    private AtomicBoolean      isLoaded = new AtomicBoolean(false);
 
-    private ACache cache;
+    protected ACache           cache;
 
-    private SimpleTask initTask;
+    private SimpleTask         initTask;
 
-    private KLoadingView loadingView;
+    private KLoadingView       loadingView;
 
-    private Handler mHandler;
-
+    private Handler            mHandler;
 
     {
         mHandler = new Handler() {
+
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -79,7 +78,6 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         View tmpContentView = getContentView();
         View tmpCustomView = getCustomContentView(tmpContentView);
         if (tmpCustomView != null) {
@@ -97,13 +95,15 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (isLoaded.compareAndSet(false, true)) {
-            startInit();
-        }
 
+        // if (isLoaded.compareAndSet(false, true)) {
+        if (contentView != null) {
+            baseAction.initView((ViewGroup) contentView);
+        }
+        startInit();
+        // }
 
     }
-
 
     protected View getContentView() {
         if (baseAction.getContentLayoutID() == 0) {
@@ -113,7 +113,8 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
 
     }
 
-    //处理需要自定义ContentView的情况
+
+    // 处理需要自定义ContentView的情况
     public View getCustomContentView(View oldContentView) {
         return null;
     }
@@ -128,10 +129,13 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
 
                 ViewGroup rootView = (ViewGroup) getActivity().findViewById(Window.ID_ANDROID_CONTENT);
                 loadingView = new KLoadingView(getActivity());
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(DisplayUtil.dip2px(getActivity(), 60), DisplayUtil.dip2px(getActivity(), 60));
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(DisplayUtil.dip2px(getActivity(),
+                                                                                                        60),
+                                                                                     DisplayUtil.dip2px(getActivity(),
+                                                                                                        60));
                 layoutParams.gravity = Gravity.CENTER;
                 rootView.addView(loadingView, layoutParams);
-                //关闭硬件加速避免bug
+                // 关闭硬件加速避免bug
                 loadingView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 loadingView.start();
 
@@ -140,7 +144,7 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
             @Override
             protected Object doInBackground(Object[] params) {
 
-                cache = ACache.get(getActivity().getApplicationContext());
+                cache = ACache.get(getActivity());
 
                 int t = baseAction.initLocalData();
                 switch (t) {
@@ -154,7 +158,7 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
                         baseAction.onLoadingNetworkData();
                         break;
                     case IBaseAction.DONT_LOAD_NETWORK_DATA:
-                        //do nothing
+                        // do nothing
                         break;
                 }
 
@@ -165,9 +169,7 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 baseAction.onLoadedNetworkData(contentView);
-                if (contentView != null) {
-                    baseAction.initView((ViewGroup) contentView);
-                }
+
                 baseAction.initController();
                 if (loadingView != null && loadingView.isStart()) {
                     loadingView.stop();
@@ -181,20 +183,22 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
     }
 
     // 缓存业务数据,时间（秒）
-    protected boolean cachePageData(HashMap<String, Object> dataMap, int cacheSecondsTime) {
+    protected boolean cachePageData(HashMap<String, Object> dataMap, int day) {
         try {
-            cache.put(getClass().getSimpleName(), dataMap, cacheSecondsTime);
+            cache.put(getClass().getSimpleName(), dataMap, day * ACache.TIME_DAY);
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    //得到缓存数据
+    // 得到缓存数据
     protected HashMap<String, Object> getCachePageData() {
         HashMap<String, Object> data = (HashMap<String, Object>) cache.getAsObject(getClass().getSimpleName());
+
         if (data == null) {
             Log.e("警告", "没有拿到缓存数据，返回空值");
+            return new HashMap<>();
         }
         return data;
     }
@@ -207,6 +211,21 @@ public abstract class KSimpleBaseFragment extends android.support.v4.app.Fragmen
     public void onDestroy() {
         super.onDestroy();
         SimpleTaskManager.removeTasksWithTag(getTaskTag());
+        if (loadingView != null && loadingView.isStart()) {
+            loadingView.stop();
+            ViewGroup rootView = (ViewGroup) getActivity().findViewById(Window.ID_ANDROID_CONTENT);
+            rootView.removeView(loadingView);
+        }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        SimpleTaskManager.removeTasksWithTag(getTaskTag());
+        if (loadingView != null && loadingView.isStart()) {
+            loadingView.stop();
+            ViewGroup rootView = (ViewGroup) getActivity().findViewById(Window.ID_ANDROID_CONTENT);
+            rootView.removeView(loadingView);
+        }
+    }
 }
