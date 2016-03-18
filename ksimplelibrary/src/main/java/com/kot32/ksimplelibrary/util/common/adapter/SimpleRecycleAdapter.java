@@ -50,7 +50,7 @@ public abstract class SimpleRecycleAdapter<T> extends RecyclerView.Adapter {
      */
     public abstract int getItemLayoutID();
 
-    class InnerViewHolder extends RecyclerView.ViewHolder {
+    public class InnerViewHolder extends RecyclerView.ViewHolder {
 
         private SparseArray<View> views = new SparseArray<View>();
         private View convertView;
