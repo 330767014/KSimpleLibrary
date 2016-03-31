@@ -118,6 +118,10 @@ onLoadedNetworkData(View content)		加载完毕,更新 View
 
 并且自带了缓存本地数据功能，例如：你可以在onLoadedNetworkData 网络数据加载完毕后 函数体中调用 cachePageData(HashMap<String, Object> dataMap）缓存你想要缓存的本地数据，又在initLocalData 中调用 getCachePageData 得到之前缓存的数据，以判断是否该继续显示 loading 界面
 
+#### 重构方便
+由于Activity和Fragment的init过程封装成了一致，弱化了生命周期的差异，所以由Activity->Fragment或者反向的重构极为方便，复制代码即可。
+![将就看吧](http://image17-c.poco.cn/mypoco/myphoto/20160331/20/17425403720160331205027047.png?968x548_130)
+
 #### 任务管理
 使用SimpleTaskManager 时能够在 Activity 的生命周期结束后取消该Activity 发出的Task
 
