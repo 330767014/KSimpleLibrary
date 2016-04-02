@@ -272,6 +272,8 @@ Fragment：继承  KRefreshFragment 并实现 IBaseAction
 
 
 ## TabBar 使用
+类图：
+![将就看吧](http://image17-c.poco.cn/mypoco/myphoto/20160402/11/17425403720160402112212060.png?730x495_130)
 
 写一个Activity 继承 KTabActivity 并实现 IBaseAction 接口，以下是一个例子（有ToolBar），具体可见项目中的示例代码
 
