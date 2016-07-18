@@ -1,8 +1,10 @@
 package com.kot32.ksimplelibrary.activity.t.base;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kot32.ksimplelibrary.activity.e.KSimpleBaseActivity;
 import com.kot32.ksimplelibrary.activity.i.IBaseAction;
@@ -61,23 +63,10 @@ public abstract class KSimpleBaseActivityImpl extends KSimpleBaseActivity {
 
 
     Toast mToast;
-    public void showToast(String text) {
-        if (!TextUtils.isEmpty(text)) {
-            if (mToast == null) {
-                mToast = Toast.makeText(getApplicationContext(), text,
-                        Toast.LENGTH_SHORT);
-            } else {
-                mToast.setText(text);
-            }
-            mToast.show();
-        }
-    }
-    
-    Toast mToast;
     public void showToast(int resId) {
         
         if (mToast == null) {
-            mToast = Toast.makeText(getApplicationContext(), resId,
+            mToast = Toast.makeText(getSimpleApplicationContext(), resId,
                     Toast.LENGTH_SHORT);
         } else {
             mToast.setText(resId);
