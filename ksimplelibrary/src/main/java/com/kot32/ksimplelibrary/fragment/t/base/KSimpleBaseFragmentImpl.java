@@ -3,6 +3,7 @@ package com.kot32.ksimplelibrary.fragment.t.base;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.kot32.ksimplelibrary.activity.i.IBaseAction;
 import com.kot32.ksimplelibrary.fragment.e.KSimpleBaseFragment;
@@ -56,6 +57,22 @@ public abstract class KSimpleBaseFragmentImpl extends KSimpleBaseFragment {
     @Override
     public View getCustomContentView(View oldContentView) {
         return null;
+    }
+
+    Toast mToast;
+    public void showToast(int resId) {
+
+        if (mToast == null) {
+            mToast = Toast.makeText(getActivity().getApplicationContext(), resId,
+                    Toast.LENGTH_SHORT);
+        } else {
+            mToast.setText(resId);
+        }
+        mToast.show();
+    }
+
+    public static void showLog(String msg) {
+        Log.i("KSimpleLibrary", msg);
     }
 
 }
