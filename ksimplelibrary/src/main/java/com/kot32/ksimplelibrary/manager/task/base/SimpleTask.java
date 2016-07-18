@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 /**
  * Created by kot32 on 15/11/3.
  */
-public class SimpleTask extends AsyncTask {
+public class SimpleTask extends ModernAsyncTask {
 
     public static final int TAG_CANCEL_ON_ACTIVITY_FINISHED = 0;
 
