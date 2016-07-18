@@ -21,7 +21,7 @@ public class SimpleTaskManager {
             tasks.put(task.getTaskTag(), taskQueue);
         }
         taskQueue.add(task);
-        if (task.getStatus() != AsyncTask.Status.RUNNING) {
+        if (task.getStatus() != ModernAsyncTask.Status.RUNNING) {
             task.execute();
         }
     }
